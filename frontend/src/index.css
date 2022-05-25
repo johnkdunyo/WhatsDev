@@ -1,11 +1,14 @@
-
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   color: #303030;
+}
+
+body {
+  display: flex;
+  overflow: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -34,17 +37,11 @@ h4 {
   font-weight: 400;
 }
 
-body {
-  display: flex;
-  overflow: hidden;
-}
+
 
 .sidebar {
-  flex: 5.17;
-  height: 100%;
-  flex: 5.17 1;
-  position: fixed;
-  width: 430px;
+  /* flex: 5.17; */
+  width: 480px !important;
 }
 
 .message-container {
@@ -86,7 +83,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px 10px;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -94,9 +91,14 @@ body {
   margin-left: 15px;
 }
 
+.message-header-content h4 {
+  margin-bottom: 0px !important;
+}
+
 .message-header-content p {
   font-size: 13px;
   color: grey;
+  margin-bottom: 0px !important;
 }
 
 .sidebar-search-container img {
@@ -174,10 +176,15 @@ body {
   margin-left: 15px;
 }
 
+.chat-info h4 {
+  margin: 0px !important
+}
+
 .chat-info p {
   font-size: 13px;
   line-height: 20px;
   color: gray;
+  margin-bottom: 0px !important;
 }
 
 .time p {
@@ -193,7 +200,7 @@ body {
 
 .message-content {
   height: calc(100vh - 120px);
-  /* background-image: url(background.png); */
+  background-image: url(../public/assets/images/background.png);
   background-position: center;
 }
 

@@ -18,7 +18,7 @@ const Sidebar = () => {
         <div className="sidebar-search">
             <div className="sidebar-search-container">
                 <img src="assets/images/search-solid.svg" alt="" />
-                <input type="text" placeholder="Search or start new chat" />
+                <input type="text" placeholder="Search or start new chatvvv" />
             </div>
         </div>
         <div className="sidebar-chats">
@@ -26,6 +26,16 @@ const Sidebar = () => {
             <SideBarChatComponent />
             <SideBarChatComponent />
             <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+            <SideBarChatComponent />
+
 
         </div>
     </div>
