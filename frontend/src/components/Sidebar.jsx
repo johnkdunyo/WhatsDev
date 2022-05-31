@@ -18,7 +18,7 @@ const Sidebar = () => {
         <div className="sidebar-search">
             <div className="sidebar-search-container">
                 <img src="assets/images/search-solid.svg" alt="" />
-                <input type="text" placeholder="Search or start new chatvvv" />
+                <input type="text" placeholder="Search or start new chat" />
             </div>
         </div>
         <div className="sidebar-chats">

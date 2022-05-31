@@ -3,7 +3,7 @@ import React from 'react'
 const SideBarChatComponent = () => {
     const user = {
         name: 'Jon Dexter',
-        lastMessage: "Hey, have you seen this?",
+        lastMessage: "Hey, what are you doing?",
         lastMessageTime:"3:30 PM"
     }
 

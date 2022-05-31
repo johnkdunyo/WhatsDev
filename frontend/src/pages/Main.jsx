@@ -5,11 +5,11 @@ import Sidebar from '../components/Sidebar'
 const Main = () => {
   return (
     <React.Fragment>
-            <div className='row'>
-              <div className='d-flex'>
+            <div className='d-flex'>
+              <div className='col-3'>
                 <Sidebar />
               </div>
-              <div className="d-flex">
+              <div className="col-9">
                 <MainChat />
               </div>
               {/* <Sidebar /> */}
