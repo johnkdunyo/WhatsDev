@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+// get firebase auth
+import { auth, database } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from "firebase/firestore"; 
+
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,16 +18,51 @@ const SignUp = () => {
   const [error, setError] = useState('');
 
 
-  const onFormSubmitHandler=(e)=>{
+  const onFormSubmitHandler= async(e)=>{
     e.preventDefault();
     setError('')
+    const avatarURL = 'https://res.cloudinary.com/jondexter/image/upload/v1654090362/WhatsDev/Profile-Avatars/user_zcrnks.png';
+    const newUser = {
+      fullName, email, avatarURL
+    }
 
     // check if confirm password match
     if(password !== confirmPassword){
      return setError('Confirm Password do not match')
+    }else {
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((response)=>{
+        console.log(response)
+        localStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
+        localStorage.setItem('User', JSON.stringify(newUser) )
+        addDoc(collection(database, "users"), newUser)
+        .then(response=>{
+          console.log(response)
+          // navigate user to home
+          navigate('/home');
+        })
+        .catch(error=>{
+          console.log(error)
+          setError(error)
+        })
+
+
+      })
+
+
+      .catch(error=>{
+        console.log(error)
+        if (error.code === 'auth/email-already-in-use') {
+          setError('Email Already in Use, please sign in or use another one');
+        }
+        // setError(error)
+      })
     }
+
+    
   }
 
+  console.log(error)
   
   return (
     <React.Fragment>
@@ -58,6 +100,8 @@ const SignUp = () => {
                 onChange={(e)=>setPassword(e.target.value)}
                 required
                 autoComplete='new-password'
+                pattern=".{8,20}"
+                title='Password must be 8 to 20 characters long'
               />
               <input 
                 type="password" 
@@ -67,6 +111,8 @@ const SignUp = () => {
                 value={confirmPassword}
                 onChange={(e)=>setConfirmPassword(e.target.value)}
                 required
+                pattern=".{8,20}"
+                title='Password must be 8 to 20 characters long'
               />
               {error && <p className='text-danger mt-0 mb-0'>{error}</p>}
               <button className='mt-1' type='submit'>Create Account</button>

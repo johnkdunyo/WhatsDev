@@ -1,19 +1,40 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+// get firebase auth
+import { auth, database } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+
 const loginFormInitialState = {
   email: "",
   password: ""
 }
 const Login = () => {
   const [loginForm, setLoginForm] = useState(loginFormInitialState);
-
+  const [error, setError] = useState();
+ 
   const onChangeHandler =(e) => {
     setLoginForm({...loginForm, [e.target.name]:e.target.value})
   };
 
   const submitFormHandler = (e) => {
     e.preventDefault();
+    signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
+    .then(response=>{
+      console.log(response)
+      const user = database.collection('users').doc(response.user.uid).get();
+      console.log(user)
+
+    })
+    .catch(error=>{
+      if(error.code === 'auth/wrong-password'){
+          setError('Please check the Password');
+        }
+        if(error.code === 'auth/user-not-found'){
+          setError('Please check the Email');
+        }
+    })
 
     console.log(loginForm)
   }
@@ -49,6 +70,7 @@ const Login = () => {
                 required
                 title='Enter your password'
               />
+              {error && <p className='text-danger mt-0 mb-0'>{error}</p>}
               <div className='row'>
               {/* <p className='form-link'>Remember me</p> */}
               <Link to="/forgotpassword" className='form-link float-right'>Forgot your password?</Link>
