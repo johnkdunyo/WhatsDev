@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 // get firebase auth
 import { auth, database } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getDoc, doc } from 'firebase/firestore';
+
 
 
 const loginFormInitialState = {
@@ -11,8 +13,19 @@ const loginFormInitialState = {
   password: ""
 }
 const Login = () => {
+  const navigate = useNavigate();
   const [loginForm, setLoginForm] = useState(loginFormInitialState);
   const [error, setError] = useState();
+  const [loginState, setLoginState] = useState(false);
+
+
+  useEffect(() => {
+    const user = localStorage.getItem('User');
+    if(user){
+      window.location.href='/'
+    }
+  },[])
+  
  
   const onChangeHandler =(e) => {
     setLoginForm({...loginForm, [e.target.name]:e.target.value})
@@ -20,22 +33,28 @@ const Login = () => {
 
   const submitFormHandler = (e) => {
     e.preventDefault();
+    setLoginState(true)
+    setError('')
     signInWithEmailAndPassword(auth, loginForm.email, loginForm.password)
     .then(response=>{
       console.log(response)
-      const user = database.collection('users').doc(response.user.uid).get();
-      console.log(user)
+      // const user = database.collection('users').doc(response.user.uid).get();
+      getDoc(doc(database, 'users', response.user.uid))
+      .then(result=>{
+        localStorage.setItem('User', JSON.stringify({...result.data(), uid:response.user.uid }));
+        navigate('/', {replace:true})
+      }
 
-    })
+     )})
     .catch(error=>{
       if(error.code === 'auth/wrong-password'){
           setError('Please check the Password');
         }
         if(error.code === 'auth/user-not-found'){
-          setError('Please check the Email');
+          setError('No account found for this email');
         }
     })
-
+    setLoginState(false)
     console.log(loginForm)
   }
 
@@ -75,7 +94,7 @@ const Login = () => {
               {/* <p className='form-link'>Remember me</p> */}
               <Link to="/forgotpassword" className='form-link float-right'>Forgot your password?</Link>
               </div>
-              <button>Sign In</button>
+              <button>{ loginState ? "Signing in..." : 'Sign In' }</button>
               <p className='mt-4'>New User? <Link to="/register" className="">Create your account here</Link> </p>
             </form>
           </div>

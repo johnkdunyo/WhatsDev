@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import socketClient from "socket.io-client";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 
 // import pages
@@ -10,15 +9,19 @@ import Main from "./pages/Main";
 import SignUp from "./pages/SignUp";
 
 
+
+
+
+
 function App() {
-  const SERVER = "http://127.0.0.1:3005";
+  
   return (
     <React.Fragment>
       <BrowserRouter>
       <Routes>
-        <Route index element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route exact path="/register" element={<SignUp />} />
-        <Route exact path="/home" element={<Main />} />
+        <Route index exact  path="/" element={<ProtectedRoute Component={Main} />} />
       </Routes>
       </BrowserRouter>
     </React.Fragment>

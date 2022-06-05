@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // get firebase auth
 import { auth, database } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc } from "firebase/firestore"; 
+import { setDoc, doc } from "firebase/firestore"; 
 
 
 const SignUp = () => {
@@ -16,6 +16,13 @@ const SignUp = () => {
 
   // state for error
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const user = localStorage.getItem('User');
+    if(user){
+      window.location.href='/'
+    }
+  },[])
 
 
   const onFormSubmitHandler= async(e)=>{
@@ -34,12 +41,13 @@ const SignUp = () => {
       .then((response)=>{
         console.log(response)
         localStorage.setItem('Auth Token', response._tokenResponse.refreshToken);
-        localStorage.setItem('User', JSON.stringify(newUser) )
-        addDoc(collection(database, "users"), newUser)
+        localStorage.setItem('User', JSON.stringify({...newUser, uid:response.user.id}) )
+        // addDoc(collection(database, "users"), {...newUser, authID: response.user.uid})
+        setDoc(doc(database, "users", response.user.uid), newUser)
         .then(response=>{
           console.log(response)
           // navigate user to home
-          navigate('/home');
+          navigate('/', {replace:true});
         })
         .catch(error=>{
           console.log(error)
