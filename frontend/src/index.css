@@ -170,6 +170,16 @@ h4 {
   background-color: #F5F5F5;
 }
 
+.addContact {
+	background-color: #04480b;
+}
+.addContact .addContact-text {
+	color: rgb(238, 229, 229) !important;
+}
+.addContact:hover {
+	background-color: #1b6722;
+}
+
 .selected{
   background-color: #EBEBEB;
 }

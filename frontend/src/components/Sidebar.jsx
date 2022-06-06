@@ -1,10 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SideBarChatComponent from './SideBarChatComponent'
 import AddChatModal from './AddChatModal';
+import AddContact from './AddContact';
+
+import { getDocs, collection } from 'firebase/firestore';
+import { database } from '../firebase';
 
 const Sidebar = ({currentChat, setCurrentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'));
     // console.log(user)
+
+    useEffect(() => {
+    //    lets get all contacts
+
+    }, [])
+
+    // function to get all user contacts
+    const getAllContacts = () => {
+        getDocs((collection(database, 'users', user.uid, 'contacts')))
+        .then(result=>{
+            result.forEach(contact => {
+                console.log(contact.data())
+            });
+        })
+        .catch(error=>{
+            console.log(error)
+        })
+    }
+
+    getAllContacts();
+
+    
 
     const handleChatClick =(chat) => {
         // console.log(chat)
@@ -21,8 +47,13 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     }
     
     const [openOptions, setOpenOptions] = useState(false);
+    const [addChatModalStatus, setAddChatModalStatus] = useState(false)
+  
 
-
+    const openAddContactModal = () => {
+        setAddChatModalStatus(prev => !prev);
+        setOpenOptions(prev=>!prev);
+    }
     
   return (
     <React.Fragment>
@@ -42,8 +73,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
                         <img className='chat-header-image' src="assets/images/more.svg" alt="" />
                     </span>
                     <div className={`dropdown-menu ${openOptions && 'show'}`} aria-labelledby="dropdownMenuLink">
-                        <p className="dropdown-item mb-2"  data-toggle="modal" data-target="#addContactModal">Add Contact</p>
-                        <AddChatModal />
+                        <p className="dropdown-item mb-2"  data-toggle="modal" data-target="#addContactModal" onClick={openAddContactModal}>Add Contact</p>
                         <p className="dropdown-item mb-2" >New Chat</p>
                         <p className="dropdown-item mb-2" >Create Group</p>
                     </div>
@@ -58,6 +88,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
             </div>
         </div>
         <div className="sidebar-chats">
+            <AddContact />
 
             <SideBarChatComponent 
                 id={1}
@@ -89,9 +120,9 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
             <SideBarChatComponent 
                 id={4}
                 chatName='LOML 🥰' 
-                lastMessage="Babe, I'm hungry!"
-                lastMessageTime='3:30 PM' 
-                chatProfileURL = 'https://res.cloudinary.com/jondexter/image/upload/v1654364501/WhatsDev/Profile-Avatars/avatar5_vb3kjh.jpg'
+                // lastMessage="Babe, I'm hungry!"
+                // lastMessageTime='3:30 PM' 
+                // chatProfileURL = 'https://res.cloudinary.com/jondexter/image/upload/v1654364501/WhatsDev/Profile-Avatars/avatar5_vb3kjh.jpg'
                 onChatClick={handleChatClick}
             />
             
@@ -99,6 +130,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
 
         </div>
     </div>
+    <AddChatModal  modalStatus={addChatModalStatus} setModalStatus={setAddChatModalStatus}/>
     </React.Fragment>
   )
 }

@@ -41,6 +41,7 @@ const Login = () => {
       // const user = database.collection('users').doc(response.user.uid).get();
       getDoc(doc(database, 'users', response.user.uid))
       .then(result=>{
+        console.log(result.data());
         localStorage.setItem('User', JSON.stringify({...result.data(), uid:response.user.uid }));
         navigate('/', {replace:true})
       }
