@@ -15,8 +15,8 @@ const AddChatModal = () => {
                 <div className="modal-body">
                 <form>
                     <div className="form-group">
-                        <label htmlFor="recipient-name" className="col-form-label">WhatsDev ID:</label>
-                        <input type="text" className="form-control" id="recipient-name" />
+                        <label htmlFor="recipient-name" className="col-form-label">Email:</label>
+                        <input type="email" className="form-control" id="recipient-name" />
                     </div>
                     <div className="form-group">
                         <label htmlFor="message-text" className="col-form-label">Contact Name:</label>

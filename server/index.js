@@ -47,6 +47,10 @@ io.on('connection', (socket)=>{
     // })
 })
 
+io.on('disconnect', socket=>{
+    console.log('User disconnected: ', socket.id)
+})
+
 
 
 
