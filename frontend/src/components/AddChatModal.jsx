@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { database } from '../firebase';
-import { setDoc , collection} from 'firebase/firestore';
+import { setDoc , collection, doc} from 'firebase/firestore';
 
 import { toast } from 'react-toastify';
 
@@ -20,11 +20,13 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
     const onClickSaveContactHandler = (e) =>{
         e.preventDefault();
         setModalStatus(prev=>!prev)
-        setDoc(collection(database, "users", userID, "contacts", email), {email, name})
+        setDoc(doc(database, "users", userID, "contacts", email), {email, name})
         .then(response=>{
             console.log(response);
             toast(`${name} added successfuly!`);
-            
+            setTimeout(()=>{
+                window.location.reload()
+            }, 5000)
 
         })
         .catch(error=>{

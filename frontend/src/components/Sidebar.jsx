@@ -8,27 +8,30 @@ import { database } from '../firebase';
 
 const Sidebar = ({currentChat, setCurrentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'));
+    const [contacts, setContacts] = useState();
     // console.log(user)
 
     useEffect(() => {
     //    lets get all contacts
+    const contacts = new Set()
+    getDocs((collection(database, 'users', user.uid, 'contacts')))
+    .then(result=>{
+        result.forEach(contact => {
+            contacts.add(contact.data())
+            // setContacts([...contacts, contact.data()])
+            console.log(contact.data())
+        });
+        setContacts([...contacts])
+    })
+    .catch(error=>{
+        console.log(error)
+    })
+    
 
-    }, [])
+    }, [user.uid])
 
-    // function to get all user contacts
-    const getAllContacts = () => {
-        getDocs((collection(database, 'users', user.uid, 'contacts')))
-        .then(result=>{
-            result.forEach(contact => {
-                console.log(contact.data())
-            });
-        })
-        .catch(error=>{
-            console.log(error)
-        })
-    }
-
-    getAllContacts();
+    
+    console.log(contacts?.length ===0 )
 
     
 
@@ -52,7 +55,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
 
     const openAddContactModal = () => {
         setAddChatModalStatus(prev => !prev);
-        setOpenOptions(prev=>!prev);
+        setOpenOptions(false);
     }
     
   return (
@@ -88,9 +91,18 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
             </div>
         </div>
         <div className="sidebar-chats">
-            <AddContact />
+            {contacts?.length  === 0  ? (<AddContact openAddContactModal={openAddContactModal} />) : (
+                contacts?.map(contact=>(
+                    <SideBarChatComponent 
+                        key={contact.email}
+                        chatName={contact.name}
+                        onChatClick={handleChatClick}
+                    />
+                ))
+            )}
+            
 
-            <SideBarChatComponent 
+            {/* <SideBarChatComponent 
                 id={1}
                 chatName='Jon Dexter' 
                 lastMessage='Hey, have you seen my bicycle?' 
@@ -124,7 +136,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
                 // lastMessageTime='3:30 PM' 
                 // chatProfileURL = 'https://res.cloudinary.com/jondexter/image/upload/v1654364501/WhatsDev/Profile-Avatars/avatar5_vb3kjh.jpg'
                 onChatClick={handleChatClick}
-            />
+            /> */}
             
 
 
