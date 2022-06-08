@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { database } from '../firebase';
-import { setDoc , collection, doc} from 'firebase/firestore';
+import { setDoc , collection, doc, getDocs, getDoc, query, where} from 'firebase/firestore';
 
 import { toast } from 'react-toastify';
 
@@ -20,18 +20,55 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
     const onClickSaveContactHandler = (e) =>{
         e.preventDefault();
         setModalStatus(prev=>!prev)
-        setDoc(doc(database, "users", userID, "contacts", email), {email, name})
-        .then(response=>{
-            console.log(response);
-            toast(`${name} added successfuly!`);
-            setTimeout(()=>{
-                window.location.reload()
-            }, 5000)
+        const newUser = {
+            email, name
+        }
+        // first lets check if there is an account for the email entered
+        getDocs(query(collection(database, "users"), where("email", '==', email)))
+        .then(result=>{
+            // console.log(result)
+            if(!result.empty){
+                result.forEach(contact=>{
+                    // console.log(contact.id)
+                    newUser.avatarURL = contact.data().avatarURL
+                    newUser.uid = contact.id
+                    setDoc(doc(database, "users", userID, "contacts", email), {name, email, avatarURL:contact.data().avatarURL, uid: contact.id})
+                        .then(response=>{
+                            // console.log(response);
+                            toast(`${name} added successfuly!`);
+                            // setTimeout(()=>{
+                            //     window.location.reload()
+                            // }, 5000)
 
+                        })
+                        .catch(error=>{
+                            console.log(error)
+                        })
+                })
+  
+                
+            }else{
+                setDoc(doc(database, "users", userID, "contacts", email), {name, email})
+                    .then(response=>{
+                        // console.log(response);
+                        toast(`${name} added successfuly!`);
+                        // setTimeout(()=>{
+                        //     window.location.reload()
+                        // }, 5000)
+
+                    })
+                    .catch(error=>{
+                        console.log(error)
+                    })
+
+            }
+            
         })
         .catch(error=>{
             console.log(error)
         })
+        console.log('new user here: ', newUser)
+        
 
 
 
