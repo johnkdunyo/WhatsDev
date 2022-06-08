@@ -1,4 +1,5 @@
 import React, {  useState } from 'react';
+import { toast } from 'react-toastify';
 
 
 
@@ -17,6 +18,8 @@ import React, {  useState } from 'react';
 const MainChat = ({currentChat}) => {
 
     const [typedMessage, setTypedMessage] = useState();
+    !currentChat.id && toast(`${currentChat.chatName} is not registered, please send him an invite`)
+    // console.
 
     const sendMessage = () => {
         console.log(typedMessage);

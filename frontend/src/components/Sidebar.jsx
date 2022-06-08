@@ -19,7 +19,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
         result.forEach(contact => {
             contacts.add(contact.data())
             // setContacts([...contacts, contact.data()])
-            console.log(contact.data())
+            // console.log(contact.data())
         });
         setContacts([...contacts])
     })
@@ -31,7 +31,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     }, [user.uid])
 
     
-    console.log(contacts?.length ===0 )
+    // console.log(contacts?.length ===0 )
 
     
 
@@ -97,6 +97,8 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
                         key={contact.email}
                         chatName={contact.name}
                         onChatClick={handleChatClick}
+                        chatProfileURL={contact?.avatarURL}
+                        id={contact?.uid}
                     />
                 ))
             )}
