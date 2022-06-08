@@ -3,6 +3,8 @@ import MainChat from '../components/MainChat'
 import MainChatDefault from '../components/MainChatDefault';
 import Sidebar from '../components/Sidebar'
 
+
+
 const chatInitialState = {
   id: 1,
   name: 'Jon Maxwell',

@@ -4,6 +4,8 @@ import { getAnalytics } from "firebase/analytics";
 import {getAuth} from "firebase/auth";
 // import { getDatabase} from "firebase/database";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database"
+
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -18,6 +20,7 @@ const firebaseConfig = {
   messagingSenderId: "1094643963651",
   appId: "1:1094643963651:web:a4d2dde2698021a4527b36",
   measurementId: "G-1Z5HWPH5HW",
+  databaseURL: "https://whatsdev-b66ec-default-rtdb.firebaseio.com"
 };
 
 
@@ -27,6 +30,9 @@ const auth = getAuth(app);
 const analytics = getAnalytics(app);
 // Initialize Cloud Firestore and get a reference to the service
 const database = getFirestore(app);
+const realtimeDB = getDatabase(app)
+
+// const chat
 
 
-export {auth ,database, analytics};
+export {auth ,database, analytics, realtimeDB};
