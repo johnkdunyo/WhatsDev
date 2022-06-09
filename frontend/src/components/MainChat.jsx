@@ -26,7 +26,7 @@ const MainChat = ({currentChat}) => {
     // console.log(user)
     const [typedMessage, setTypedMessage] = useState();
     const [isRegistered, setIsRegistered] = useState(true);
-    const [chats, setChats] = useState([]);
+    // const [chats, setChats] = useState([]);
     // !currentChat.id && toast(`${currentChat.chatName} is not registered, please send him an invite`)
  
 

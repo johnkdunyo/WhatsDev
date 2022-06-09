@@ -5,11 +5,11 @@ import Sidebar from '../components/Sidebar'
 
 
 
-const chatInitialState = {
-  id: 1,
-  name: 'Jon Maxwell',
-  chatProfileURL: ""
-}
+// const chatInitialState = {
+//   id: 1,
+//   name: 'Jon Maxwell',
+//   chatProfileURL: ""
+// }
 
 const Main = () => {
   const [currentChat, setCurrentChat] = useState();
