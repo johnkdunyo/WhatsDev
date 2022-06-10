@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 
 import { realtimeDB, database } from '../firebase';
-import { ref, set, child, push, serverTimestamp } from 'firebase/database';
+import { ref, set, child, push, serverTimestamp, onValue } from 'firebase/database';
 
 
 
@@ -24,14 +24,15 @@ import { ref, set, child, push, serverTimestamp } from 'firebase/database';
 const MainChat = ({currentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'))
     // console.log(user)
+    console.log(currentChat)
     const [typedMessage, setTypedMessage] = useState();
     const [isRegistered, setIsRegistered] = useState(true);
-    // const [chats, setChats] = useState([]);
+    const [chats, setChats] = useState([]);
     // !currentChat.id && toast(`${currentChat.chatName} is not registered, please send him an invite`)
  
 
     useEffect(()=>{
-        if(currentChat.id){
+        if(currentChat.uid){
             setIsRegistered(true)
         } else {
             setIsRegistered(false)
@@ -43,22 +44,25 @@ const MainChat = ({currentChat}) => {
 
     const sendMessage = () => {
         console.log(typedMessage);
+        sendChatData(typedMessage)
     }
 
 
+    // create a function to send chat data: 
+    // inputs: 1. senderID, 2. receiverID, 3. message
  
-    const sendChatData = (message="This is the message content", ) => {
+    // senderID = user.uid, receiverID = currentChat.uid
+    const sendChatData = (message="This is the message content", senderID=user.uid, receiverID=currentChat.uid ) => {
         const chatsRef = ref(realtimeDB, 'newChats'); 
         const chatId = push(chatsRef);
-        // const messageId = push(`/${chatsRef}/${chatId}`);
         console.log(chatId.key)
         const messageRef = ref(realtimeDB, 'newChats/' + chatId.key);
         const mesId = push(messageRef);
         set(chatId, {
-            parties: [user.uid, currentChat.id],
+            parties: [senderID, receiverID],
             [mesId.key]:{
                     content: message,
-                    senderID: user.uid,
+                    senderID,
                     timestamp: serverTimestamp()
                 }
         })
@@ -66,12 +70,16 @@ const MainChat = ({currentChat}) => {
 
     const readChatData = () => {
         const chatsRef = ref(realtimeDB, 'newChats')
+        onValue(chatsRef, (snapshot)=>{
+            console.log(snapshot.val())
+        })
     }
 
     // sendChatData()
+    readChatData()
 
     
-    console.log(isRegistered)
+    // console.log(isRegistered)
   return (
     <React.Fragment>
         <div className="message-container">
