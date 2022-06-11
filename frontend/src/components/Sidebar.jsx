@@ -77,7 +77,6 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
                     </span>
                     <div className={`dropdown-menu ${openOptions && 'show'}`} aria-labelledby="dropdownMenuLink">
                         <p className="dropdown-item mb-2"  data-toggle="modal" data-target="#addContactModal" onClick={openAddContactModal}>Add Contact</p>
-                        <p className="dropdown-item mb-2" >New Chat</p>
                         <p className="dropdown-item mb-2" >Create Group</p>
                     </div>
                 </div>

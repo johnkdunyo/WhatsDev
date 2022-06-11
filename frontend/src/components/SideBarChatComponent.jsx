@@ -19,7 +19,7 @@ const SideBarChatComponent = (props) => {
     const handleOnClick = (e)=>{
         document.getElementById(props.id)
         props.onChatClick({
-            id:props.id, 
+            uid:props.id, 
             chatName:props.chatName,
             chatProfileURL:user.chatProfileURL
         })
