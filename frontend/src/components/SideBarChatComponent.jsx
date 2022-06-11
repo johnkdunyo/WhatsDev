@@ -13,6 +13,7 @@ const SideBarChatComponent = (props) => {
     user.lastMessage = props.lastMessage === undefined ? " " : props.lastMessage
     user.lastMessageTime = props.lastMessageTime === undefined ? " " : props.lastMessageTime;
     user.chatProfileURL = props.chatProfileURL === undefined ? "https://res.cloudinary.com/jondexter/image/upload/v1654525298/WhatsDev/Profile-Avatars/unknown_yinl1i.jpg" : props.chatProfileURL
+    user.chatID = props.chatID
 
     // toLocaleString('en', { hour: 'numeric', minute: 'numeric', hour12: true , timeZone: 'GMT'})
     
@@ -21,7 +22,8 @@ const SideBarChatComponent = (props) => {
         props.onChatClick({
             uid:props.id, 
             chatName:props.chatName,
-            chatProfileURL:user.chatProfileURL
+            chatProfileURL:user.chatProfileURL,
+            chatID: props.chatID
         })
     }
 
