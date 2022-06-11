@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { database } from '../firebase';
-import { setDoc , collection, doc, getDocs, getDoc, query, where} from 'firebase/firestore';
+import { setDoc , collection, doc, getDocs, getDoc, query, where, updateDoc} from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid'
 
 import { toast } from 'react-toastify';
 
@@ -13,8 +14,10 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
    
 
 
-    const user = localStorage.getItem('User');
-    const userID = JSON.parse(user).uid;
+    const userObj = localStorage.getItem('User');
+    const user = JSON.parse(userObj);
+    const userID = user.uid;
+    
     
 
     const onClickSaveContactHandler = (e) =>{
@@ -26,19 +29,47 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
         // first lets check if there is an account for the email entered
         getDocs(query(collection(database, "users"), where("email", '==', email)))
         .then(result=>{
-            // console.log(result)
+            console.log(result)
             if(!result.empty){
+                console.log(result[0])
                 result.forEach(contact=>{
-                    // console.log(contact.id)
+                    const chatID = uuidv4()
                     newUser.avatarURL = contact.data().avatarURL
                     newUser.uid = contact.id
-                    setDoc(doc(database, "users", userID, "contacts", email), {name, email, avatarURL:contact.data().avatarURL, uid: contact.id})
+                    setDoc(doc(database, "users", userID, "contacts", email), {name, email, avatarURL:contact.data().avatarURL, uid: contact.id, chatID})
                         .then(response=>{
                             // console.log(response);
-                            toast(`${name} added successfuly!`);
+                            
                             // setTimeout(()=>{
                             //     window.location.reload()
                             // }, 5000)
+
+                            // get added user and add his the current user to his contacts
+                            console.log(
+                                'name: ', user.fullName,
+                                'email: ', user.email,
+                                'avatarURL:', user.avatarURL,
+                                'uid :', user.uid,
+                                'chatID: ', chatID
+                            )
+                            setDoc(doc(database, 'users', contact.id, 'contacts', user.email ),
+                            {
+                                name: user.fullName, 
+                                email: user.email,
+                                avatarURL: user.avatarURL,
+                                uid: user.uid,
+                                chatID
+                            } ).then(result=>{
+                                console.log(result)
+                                toast(`${name} added successfuly!`);
+                            }).catch(error=>{
+                                console.log(error)
+                            })
+
+
+                            
+
+
 
                         })
                         .catch(error=>{

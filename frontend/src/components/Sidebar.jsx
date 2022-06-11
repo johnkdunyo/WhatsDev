@@ -98,10 +98,19 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
                         onChatClick={handleChatClick}
                         chatProfileURL={contact?.avatarURL}
                         id={contact?.uid}
+                        chatID={contact?.chatID}
                     />
                 ))
             )}
-            
+            {/* <p className='text-primary'>{user.fullName}</p> */}
+            {/* <SideBarChatComponent 
+                id={100}
+                chatName={user.fullName} 
+                lastMessage='this is me, and im here' 
+                lastMessageTime='3:30 PM' 
+                chatProfileURL = {user.avatarURL}
+                onChatClick={handleChatClick}
+            /> */}
 
             {/* <SideBarChatComponent 
                 id={1}
