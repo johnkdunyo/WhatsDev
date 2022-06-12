@@ -42,22 +42,35 @@ const MainChat = ({currentChat}) => {
                 const chatDocs = snapshot.val()
                 console.log(Object.values(chatDocs))
                 setChats(Object.values(chatDocs))
-               
                 
             })
         }
 
+        
+        const enterIsSend = () => {
+            const sendSVG = document.getElementById('send-svg');
+            sendSVG.addEventListener("keypress", function(event){
+                console.log(event)
+                if(event.key === "Enter") {
+                    document.getElementById('submitChat').click();
+                }
+            })
+        }
 
         if(currentChat.uid){
             setIsRegistered(true)
             readChatData()
+           
 
         } else {
             setIsRegistered(false)
             toast(`${currentChat.chatName} is not registered, please send him an invite`);
         }
+        
 
-    }, [currentChat])
+       
+
+    }, [chatID, currentChat])
 
     
 
@@ -150,8 +163,8 @@ const MainChat = ({currentChat}) => {
                     onChange={(e)=>setTypedMessage(e.target.value)}
                 />
                 <img src="assets/images/microphone.svg" alt="" />
-                <div onClick={sendMessage}>
-                    <img src="assets/images/send.svg" alt="" />
+                <div id="submitChat" onClick={sendMessage} >
+                    <img src="assets/images/send.svg" alt="" id="send-svg" />
                 </div>
             </div>
         </div>
