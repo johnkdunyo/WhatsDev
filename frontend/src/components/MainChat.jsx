@@ -2,7 +2,7 @@ import React, {  useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid'
 
-import { realtimeDB, database } from '../firebase';
+import { realtimeDB, database, auth } from '../firebase';
 import { ref, set, child, push, serverTimestamp, onValue } from 'firebase/database';
 
 
@@ -22,10 +22,11 @@ import { ref, set, child, push, serverTimestamp, onValue } from 'firebase/databa
 
 
 const MainChat = ({currentChat}) => {
-    console.log(currentChat)
+    // console.log(currentChat)
+    console.log(currentChat.chatID)
     const user = JSON.parse(localStorage.getItem('User'))
     // const chatID = uuidv4() //to this if no chat id is there
-    const chatID = currentChat.chatID === undefined ? currentChat.chatID : null
+    const chatID = currentChat.chatID !== undefined ? currentChat.chatID : null
     // console.log(user)
     // console.log(currentChat)
     const [typedMessage, setTypedMessage] = useState('');
@@ -33,6 +34,9 @@ const MainChat = ({currentChat}) => {
     const [chats, setChats] = useState([]);
     // !currentChat.id && toast(`${currentChat.chatName} is not registered, please send him an invite`)
  
+
+    const USER = auth.currentUser
+    console.log(USER)
 
     useEffect(()=>{
         const readChatData = () => {
@@ -42,22 +46,35 @@ const MainChat = ({currentChat}) => {
                 const chatDocs = snapshot.val()
                 console.log(Object.values(chatDocs))
                 setChats(Object.values(chatDocs))
-               
                 
             })
         }
 
+        
+        const enterIsSend = () => {
+            const sendSVG = document.getElementById('send-svg');
+            sendSVG.addEventListener("keypress", function(event){
+                console.log(event)
+                if(event.key === "Enter") {
+                    document.getElementById('submitChat').click();
+                }
+            })
+        }
 
         if(currentChat.uid){
             setIsRegistered(true)
             readChatData()
+           
 
         } else {
             setIsRegistered(false)
             toast(`${currentChat.chatName} is not registered, please send him an invite`);
         }
+        
 
-    }, [currentChat])
+       
+
+    }, [chatID, currentChat])
 
     
 
@@ -108,7 +125,7 @@ const MainChat = ({currentChat}) => {
 
     
     // console.log(isRegistered)
-    console.log(chats)
+    // console.log(chats)
   return (
     <React.Fragment>
         <div className="message-container">
@@ -150,8 +167,8 @@ const MainChat = ({currentChat}) => {
                     onChange={(e)=>setTypedMessage(e.target.value)}
                 />
                 <img src="assets/images/microphone.svg" alt="" />
-                <div onClick={sendMessage}>
-                    <img src="assets/images/send.svg" alt="" />
+                <div id="submitChat" onClick={sendMessage} >
+                    <img src="assets/images/send.svg" alt="" id="send-svg" />
                 </div>
             </div>
         </div>

@@ -3,8 +3,10 @@ import SideBarChatComponent from './SideBarChatComponent'
 import AddChatModal from './AddChatModal';
 import AddContact from './AddContact';
 
-import { getDocs, collection } from 'firebase/firestore';
-import { database } from '../firebase';
+import { getDocs, collection ,} from 'firebase/firestore';
+import { auth, database } from '../firebase';
+import { signOut } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 const Sidebar = ({currentChat, setCurrentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'));
@@ -50,21 +52,39 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     }
     
     const [openOptions, setOpenOptions] = useState(false);
-    const [addChatModalStatus, setAddChatModalStatus] = useState(false)
+    const [addChatModalStatus, setAddChatModalStatus] = useState(false);
+    const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
   
 
     const openAddContactModal = () => {
         setAddChatModalStatus(prev => !prev);
         setOpenOptions(false);
     }
+
+    const logoutUser= () =>{
+        signOut(auth)
+        .then(result=>{
+            console.log(result)
+            localStorage.clear()
+            toast('User logged out successfully')
+            window.location.reload()
+        })
+        .catch(error=>{
+            console.log(error)
+        })
+    }
     
   return (
     <React.Fragment>
         <div className="sidebar">
-        <div className="header">
-            <div className="avatar">
+        <div className="header dropdown show">
+            <div className="avatar" id='Logout-dropdownMenu' data-toggle="dropdown" aria-haspopup="true" onClick={()=>setOpenProfileDropdown(prev=>!prev)}>
                 <img src={user.avatarURL} alt="user avatar" />
             </div>
+                <div className={`dropdown-menu ${openProfileDropdown && 'show'}`} aria-labelledby="Logout-dropdownMenu">
+                     <p className="dropdown-item mb-2" onClick={logoutUser}>Logout</p>
+                </div>
+            
             <div className="chat-header-right">
                 {/* <img className='chat-header-image' src="assets/images/circle-notch-solid.svg" alt="" /> */}
                 {/* <img className='chat-header-image' src="assets/images/chat.svg" alt="" /> */}
