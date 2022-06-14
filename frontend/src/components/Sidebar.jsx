@@ -20,6 +20,10 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     useEffect(() => {
     //    lets get all contacts
     const contacts = new Set()
+    const  contactsRef = collection(database, 'users', user.uid, 'contacts');
+    const unsub = contactsRef.onSnapshot(contactShots=>{
+        console.log(contactShots)
+    })
     getDocs((collection(database, 'users', user.uid, 'contacts')))
     .then(result=>{
         result.forEach(contact => {
