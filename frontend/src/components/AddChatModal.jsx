@@ -36,7 +36,7 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
                     const chatID = uuidv4()
                     newUser.avatarURL = contact.data().avatarURL
                     newUser.uid = contact.id
-                    setDoc(doc(database, "users", userID, "contacts", email), {name, email, avatarURL:contact.data().avatarURL, uid: contact.id, chatID})
+                    setDoc(doc(database, "users", userID, "contacts", email), { email, uid: contact.id, chatID})
                         .then(response=>{
                             // console.log(response);
                             
@@ -54,9 +54,7 @@ const AddChatModal = ({modalStatus, setModalStatus}) => {
                             )
                             setDoc(doc(database, 'users', contact.id, 'contacts', user.email ),
                             {
-                                name: user.fullName, 
                                 email: user.email,
-                                avatarURL: user.avatarURL,
                                 uid: user.uid,
                                 chatID
                             } ).then(result=>{

@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { signOut } from 'firebase/auth';
-import { auth, database } from '../firebase';
+import { auth, database, storage } from '../firebase';
 import { toast } from 'react-toastify';
+import {  
+    ref as storageRef, 
+    getDownloadURL,
+    uploadBytes,
+} from "firebase/storage";
+
+import { updateDoc, doc } from "firebase/firestore"; 
 
 const ProfileSideBarComponent = ({openProfileSideBar, setOpenProfileSideBar}) => {
     const user = JSON.parse(localStorage.getItem('User'));
+    const [upload, setUpload] = useState(false);
+    const [newAvatar, setNewAvatar] = useState('');
 
     const logoutUser= () =>{
         signOut(auth)
@@ -19,6 +28,43 @@ const ProfileSideBarComponent = ({openProfileSideBar, setOpenProfileSideBar}) =>
         })
     }
 
+    
+
+
+    const uploadImage = () => {
+        setUpload(true)
+   
+    }
+
+    const submitForm = async() => {
+        const imgRef = storageRef(
+            storage,
+            `avatar/${new Date().getTime()} - ${newAvatar.name}`
+          );
+
+          
+          const snap = await uploadBytes(imgRef, newAvatar);
+          const avatarURL = await getDownloadURL(storageRef(storage, snap.ref.fullPath));
+
+          await updateDoc(doc(database, "users", auth.currentUser.uid), {
+            avatarURL,
+            avatarPath: snap.ref.fullPath,
+          });
+          toast('Profile updated successfully')
+          setUpload(false)
+          setNewAvatar('')
+          
+
+       
+
+        
+
+    }
+
+
+    
+
+    // console.log(newAvatar)
   return (
     <>
     <div className={`offcanvas offcanvas-start ${openProfileSideBar && 'show'}`} data-bs-scroll="true" tabIndex="-1" id="offcanvasWithBothOptions" 
@@ -36,15 +82,20 @@ const ProfileSideBarComponent = ({openProfileSideBar, setOpenProfileSideBar}) =>
 
         
         <div className='text-center'>
-            <div className='profile-img_container'>
-                <img src={user.avatarURL} alt="user avatar" />
+            <div className='profile-img_container' onClick={uploadImage}>
+                <img src={user.avatarURL} alt="user avatar" className='avata-img' />
                 
-                <div className='overlayf'>
+                <div className='myoverlay'>
                     <p>Update image
-                    <img height='20px' width='20px' src='assets/images/edit.png' alt='edit'/>
+                    <img className='editIcon' height='20px' width='20px' src='assets/images/edit.png' alt='edit'/>
                     </p>
                 </div>
             </div>
+            {upload && 
+            <div>
+                <input type="file" id="img" name="img" accept="image/*" onChange={(e)=>setNewAvatar(e.target.files[0])}/>
+            </div>
+            }
         </div>
 
         <div className='text-left mt-5'>
@@ -62,8 +113,9 @@ const ProfileSideBarComponent = ({openProfileSideBar, setOpenProfileSideBar}) =>
         </div>
 
 
-        <div className='align-self-end mt-5'>
+        <div className='d-flex justify-content-between mt-5'>
             <button className='btn btn-secondary' onClick={logoutUser}>Logout</button>
+            {(newAvatar !=='' && newAvatar !==undefined) && <button className='btn btn-success' onClick={submitForm}>Save</button>}
         </div>
     </div>
     </div>

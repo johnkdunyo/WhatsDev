@@ -14,13 +14,18 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     const [contacts, setContacts] = useState();
     // console.log(user)
 
+    const userr = auth.currentUser
+    // console.log(userr)
+
     useEffect(() => {
     //    lets get all contacts
     const contacts = new Set()
     getDocs((collection(database, 'users', user.uid, 'contacts')))
     .then(result=>{
         result.forEach(contact => {
+            console.log('this what i have from db: ', contact.data())
             contacts.add(contact.data())
+            
             // setContacts([...contacts, contact.data()])
             // console.log(contact.data())
         });
