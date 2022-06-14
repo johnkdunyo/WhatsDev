@@ -3,11 +3,13 @@ import SideBarChatComponent from './SideBarChatComponent'
 import AddChatModal from './AddChatModal';
 import AddContact from './AddContact';
 
-import { getDocs, collection ,} from 'firebase/firestore';
+import { getDocs, getDoc, collection, onSnapshot, doc} from 'firebase/firestore';
 import { auth, database } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import ProfileSideBarComponent from './ProfileSideBarComponent';
+import { async } from '@firebase/util';
+
 
 const Sidebar = ({currentChat, setCurrentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'));
@@ -19,29 +21,67 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
 
     useEffect(() => {
     //    lets get all contacts
-    const contacts = new Set()
-    const  contactsRef = collection(database, 'users', user.uid, 'contacts');
-    const unsub = contactsRef.onSnapshot(contactShots=>{
-        console.log(contactShots)
-    })
-    getDocs((collection(database, 'users', user.uid, 'contacts')))
-    .then(result=>{
-        result.forEach(contact => {
-            console.log('this what i have from db: ', contact.data())
-            contacts.add(contact.data())
+    const unsub =  async() => {
+        const myContacts = [];
+        const  contactsRef = collection(database, 'users', user.uid, 'contacts');
+        // onSnapshot(contactsRef, querySnapResult => {
+        //     querySnapResult.forEach(contactDoc => {
+        //         // console.log('this is what you want: ', contactDoc.data().uid);             
+        //         myContacts.push({uid: contactDoc.data().uid, email: contactDoc.data().email});
+        //     });
             
-            // setContacts([...contacts, contact.data()])
-            // console.log(contact.data())
-        });
-        setContacts([...contacts])
-    })
-    .catch(error=>{
-        console.log(error)
-    })
-    
+        // })
+        // setContacts(myContacts)
+        const result = await getDocs(contactsRef);
+        result.forEach(contact=>{
+            console.log('contacts :', contact.data())
+            // get data if it exists
+            
+            if(contact.data().uid){
+                getDoc(doc(database, 'users', contact.data().uid))
+                .then(data=>{
+                    console.log('promise : ', data.data())
+                    myContacts.push({
+                        fullName: data.data().fullName,
+                        name: contact.data().name,
+                        chatID: contact.data().chatID,
+                        uid: contact.data().uid,
+                        avatarURL: data.data().avatarURL,
+                        email: contact.data().email
 
-    }, [user.uid])
+                    })
+                })
+            }else{
+                myContacts.push({name: contact.data().name, email: contact.data().email })
+            }
+            // myContacts.push({
+            //     uid: contact.data().uid,
+            //     name: contact.data().name,
+            //     chatID: contact.data().chatID
+            // })
+        })
+        setContacts(myContacts)
+        console.log(result)
+        
+    }
 
+    // const mainfunc = () => {
+    //     unsub()
+    //     console.log(contacts)
+        // console.log(Object.values(contactss))
+       
+        // now get user data from db with the id
+        // console.log(contacts)
+        //   const result = await  getDoc(doc(database, 'users', contactDoc.data().uid))
+        //   const data = {...result.data(), name: contactDoc.data().name}
+    // }
+
+    // mainfunc();
+    unsub()
+    // // clean up
+    // return () => unsub();
+    }, [])
+    console.log(contacts)
     
     // console.log(contacts?.length ===0 )
 
