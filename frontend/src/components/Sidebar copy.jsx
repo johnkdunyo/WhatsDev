@@ -7,15 +7,11 @@ import { getDocs, collection ,} from 'firebase/firestore';
 import { auth, database } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
-import ProfileSideBarComponent from './ProfileSideBarComponent';
 
 const Sidebar = ({currentChat, setCurrentChat}) => {
     const user = JSON.parse(localStorage.getItem('User'));
     const [contacts, setContacts] = useState();
     // console.log(user)
-
-    const userr = auth.currentUser
-    // console.log(userr)
 
     useEffect(() => {
     //    lets get all contacts
@@ -23,9 +19,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     getDocs((collection(database, 'users', user.uid, 'contacts')))
     .then(result=>{
         result.forEach(contact => {
-            console.log('this what i have from db: ', contact.data())
             contacts.add(contact.data())
-            
             // setContacts([...contacts, contact.data()])
             // console.log(contact.data())
         });
@@ -59,7 +53,7 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
     
     const [openOptions, setOpenOptions] = useState(false);
     const [addChatModalStatus, setAddChatModalStatus] = useState(false);
-    const [openProfileSideBar, setOpenProfileSideBar] = useState(false);
+    const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
   
 
     const openAddContactModal = () => {
@@ -83,16 +77,13 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
   return (
     <React.Fragment>
         <div className="sidebar">
-        <div className="header">
-            <div className="avatar" 
-                data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions"
-                onClick={()=>setOpenProfileSideBar(prev=>!prev)}>
+        <div className="header dropdown show">
+            <div className="avatar" id='Logout-dropdownMenu' data-toggle="dropdown" aria-haspopup="true" onClick={()=>setOpenProfileDropdown(prev=>!prev)}>
                 <img src={user.avatarURL} alt="user avatar" />
             </div>
-            {/* <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions">Enable both scrolling & backdrop</button> */}
-                {/* <div className={`dropdown-menu ${openProfileSideBar && 'show'}`} aria-labelledby="Logout-dropdownMenu">
+                <div className={`dropdown-menu ${openProfileDropdown && 'show'}`} aria-labelledby="Logout-dropdownMenu">
                      <p className="dropdown-item mb-2" onClick={logoutUser}>Logout</p>
-                </div> */}
+                </div>
             
             <div className="chat-header-right">
                 {/* <img className='chat-header-image' src="assets/images/circle-notch-solid.svg" alt="" /> */}
@@ -182,10 +173,6 @@ const Sidebar = ({currentChat, setCurrentChat}) => {
         </div>
     </div>
     <AddChatModal  modalStatus={addChatModalStatus} setModalStatus={setAddChatModalStatus}/>
-
-
-    <ProfileSideBarComponent openProfileSideBar={openProfileSideBar} setOpenProfileSideBar={setOpenProfileSideBar} />
-
     </React.Fragment>
   )
 }

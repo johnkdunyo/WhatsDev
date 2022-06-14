@@ -490,6 +490,46 @@ footer {
 }
 
 
+
+  .profile-img_container {
+	position: relative;
+  }
+  .profile-img_container img {
+	border-radius: 50%;
+	border: 1px solid var(--color-4);
+	transition: 0.5s ease-in-out all;
+  }
+
+  .avata-img {
+	height: 200px !important;
+	width: 180px !important;
+  }
+  
+  .profile-img_container:hover img {
+	opacity: 0.4;
+  }
+  .profile-img_container:hover .overlay {
+	opacity: 1;
+  }
+
+  .editIcon {
+	height: 20px !important;
+	width:  20px !important;
+  }
+  /*
+  .overlay {
+	transition: 0.5s ease;
+	opacity: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	right: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center !important;
+	border-radius: 50%;
+	
+  }  */
+
 /* login page styles */
 /* @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800'); */
 

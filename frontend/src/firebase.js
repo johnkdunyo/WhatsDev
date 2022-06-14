@@ -5,6 +5,7 @@ import {getAuth} from "firebase/auth";
 // import { getDatabase} from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database"
+import { getStorage } from "firebase/storage";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -31,8 +32,9 @@ const analytics = getAnalytics(app);
 // Initialize Cloud Firestore and get a reference to the service
 const database = getFirestore(app);
 const realtimeDB = getDatabase(app)
+const storage = getStorage(app);
 
 // const chat
 
 
-export {auth ,database, analytics, realtimeDB};
+export {auth ,database, analytics, realtimeDB, storage};
